@@ -2,7 +2,7 @@
 """
 class BaseModel
 """
-import models
+from models import storage
 from uuid import uuid4
 from datetime import datetime
 
@@ -13,20 +13,17 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """ initializes class """
-        if id not in kwargs:
-            self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-
-        if kwargs:
-            if key == "created_at" or key == "updated_at":
-                value = date.time.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-            if key != "__class__":
-                setattr(self, key, value)
+        if len(kwargs) > 0:
+            for key, value in kwargs.items:
+                if key == "created_at" or key == "updated_at":
+                    value = date.time.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+                if key != "__class__":
+                    setattr(self, key, value)
 
         else:
             self.id = str(uuid4())
-            self.created_at = self.updated_at =  datetime.now()
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
             models.storage.new(self)
 
     def __str__(self):
