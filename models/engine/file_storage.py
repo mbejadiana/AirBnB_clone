@@ -3,7 +3,7 @@
 Class FileStorage
 """
 import json
-import os.path
+import os
 
 class FileStorage:
     """ Serializes instances to a JSON file and
@@ -30,11 +30,11 @@ class FileStorage:
 
     def reload(self):
         """ deserializes JSON file to _objects """
-        if os.path.exists(FileStorage.__file_path):
-            with open(self.__file_path) as f:
-                obj_dict = json.load(f)
-                for obj in obj_dict.values():
-                    cls_d = obj["__class_"]
-                    del obj["__class__"]
-                    self.new(eval(cls_d)(**obj))
+        if not os.path.isfile(FileStorage.__file_path):
             return
+        with open(FileStorage.__file_path, "r") as file_path:
+            objects = json.load(file_path)
+            FileStorage.__objects = {}
+            for key in objects:
+                name = key.split(".")[0]
+                FileStorage.__objects[key] = my_dict[name](**objects[key])
