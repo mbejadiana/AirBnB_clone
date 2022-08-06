@@ -6,13 +6,13 @@
 """
 
 import json
-import os.path as path
+import os.path
 from datetime import datetime
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
 from models.city import City
-from models.amenity import amenity
+from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
@@ -24,29 +24,29 @@ class FileStorage:
 
     def all(self):
         """Return all objects"""
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """Save a new object in the __objects dictionary"""
-        key = obj.__class__.__name__ + "." + obj.id
-        self.__objects[key] = obj
+        FileStorage.__objects[obj.__class__.__name__ + "." + obj.id] = obj
 
     def save(self):
         """Convert the object into a dictionary and save it in the json file"""
-        with open(self.__file_path, mode="w", encoding="UTF-8") as a:
+        with open(FileStorage.__file_path, mode="w", encoding="UTF-8") as a:
             new = {}
-            for key, value in self.__objects.items():
+            for key, value in FileStorage.__objects.items():
                 new[key] = value.to_dict()
             txt = json.dumps(new)
             a.write(txt)
 
     def reload(self):
         """Recharge information from json file and convert to an object"""
-        if (path.isfile(self.__file_path)):
-            with open(self.__file_path, encoding="UTF-8") as a:
-                txt = a.read()
-            if(len(txt) > 0):
-                dic = json.loads(txt)
-                for key, value in dic.items():
-                    obj = eval(value["__class__"])(**value)
-                    self.__objects[key] = obj
+
+        my_dict = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
+                   'State': State, 'City': City, 'Amenity': Amenity,
+                   'Review': Review}
+        if os.path.isfile(FileStorage.__file_path):
+            with open(FileStorage.__file_path, 'r', encoding='utf-8') as q:
+                other_dict = json.loads(q.read())
+                for key, val in other_dict.items():
+                    self.new(my_dict[val['__class__']](**val))
