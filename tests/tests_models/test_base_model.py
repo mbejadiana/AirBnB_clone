@@ -1,72 +1,103 @@
 #!/usr/bin/python3
-
-"""Test for the BaseModel class"""
-
 import unittest
-from datetime import datetime
-import os
-from models.base_model import BaseModel
 import pep8
+import os
+from models.__init__ import storage
+from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 
 
-class TestBaseModel(unittest.TestCase):
-    """This will test the base model class"""
+def setUpModule():
+    """ """
+    pass
+
+
+def tearDownModule():
+    """ """
+    pass
+
+
+class TestStringMethods(unittest.TestCase):
+    """ Check the pep8 """
+    def testpep8(self):
+        style = pep8.StyleGuide(quiet=True)
+        file1 = "models/base_model.py"
+        file2 = "tests/test_models/test_base_model.py"
+        check = style.check_files([file1, file2])
+        self.assertEqual(check.total_errors, 0,
+                         "Found code style errors (and warning).")
+
+
+class TestModels(unittest.TestCase):
+
+    def setUp(self):
+        """ Set a variable """
+        self.my_model = BaseModel()
+        self.my_model.my_number = 55
+        print("setUp")
+
+    def tearDown(self):
+        """ End variable """
+        print("tearDown")
 
     @classmethod
     def setUpClass(cls):
-        """Setup for the test"""
-        cls.base = BaseModel()
-        cls.base.name = "Betty"
-        cls.base.num = 20
+        """ Set a Class """
+        print("setUpClass")
 
     @classmethod
-    def teardown(cls):
-        """At the end of the test this will tear it down"""
-        del cls.base
+    def tearDownClass(cls):
+        """ Del a Class"""
+        print("tearDownClass")
 
-    def tearDown(self):
-        """Teardown"""
-        try:
-            os.remove("file.json")
-        except Exception:
-            pass
-
-    def test_pep8_BaseModel(self):
-        """Test pep8 style"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/base_model.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
-
-    def test_checking_for_docstring_BaseModel(self):
-        """Checking for docstrings"""
+    def test_models_doc(self):
+        """ Check the documentation """
         self.assertIsNotNone(BaseModel.__doc__)
         self.assertIsNotNone(BaseModel.__init__.__doc__)
-        self.assertIsNotNone(BaseModel.__str__.__doc__)
         self.assertIsNotNone(BaseModel.save.__doc__)
+        self.assertIsNotNone(BaseModel.__str__.__doc__)
         self.assertIsNotNone(BaseModel.to_dict.__doc__)
 
-    def test_method_BaseModel(self):
-        """Chekcing if Basemodel have methods"""
-        self.assertTrue(hasattr(BaseModel, "__init__"))
-        self.assertTrue(hasattr(BaseModel, "save"))
-        self.assertTrue(hasattr(BaseModel, "to_dict"))
+    def test_models_name(self):
+        """ Check if name is create"""
+        self.my_model.name = 'Holberton'
+        self.assertEqual(self.my_model.name, 'Holberton')
 
-    def test_init_BaseModel(self):
-        """Test if the base is an instance of type BaseModel"""
-        self.assertTrue(isinstance(self.base, BaseModel))
+    def test_models_number(self):
+        """ Check if the number is create """
+        self.assertEqual(self.my_model.my_number, 55)
 
-    def test_save_BaesModel(self):
-        """Test if the save method works"""
-        self.base.save()
-        self.assertNotEqual(self.base.created_at, self.base.updated_at)
+    def test_models_exist(self):
+        """ Check if the json file and methods exists """
+        self.my_model.save()
+        self.assertTrue(os.path.isfile('file.json'))
+        self.assertTrue(hasattr(self.my_model, "__init__"))
+        self.assertTrue(hasattr(self.my_model, "__str__"))
+        self.assertTrue(hasattr(self.my_model, "save"))
+        self.assertTrue(hasattr(self.my_model, "to_dict"))
 
-    def test_to_dict_BaseModel(self):
-        """Test if to_dictionary method works"""
-        base_dict = self.base.to_dict()
-        self.assertEqual(self.base.__class__.__name__, 'BaseModel')
-        self.assertIsInstance(base_dict['created_at'], str)
-        self.assertIsInstance(base_dict['updated_at'], str)
+    def test_models_not_empty(self):
+        """ Check if the json file is not empty """
+        self.assertTrue('file.json')
 
+    def test_models_save(self):
+        """ Check if the save function works """
+        a = self.my_model.updated_at()
+        self.my_model.save()
+        self.assertNotEqual(a, self.my_model.update_at)
+        self.assertNotEqual(self.my_model.created_at,
+                            self.my_model.updated_at)
 
-if __name__ == "__main__":
+    def test_models_instance(self):
+        """ check if user_1 is instance of User """
+        self.assertIsInstance(self.my_model, BaseModel)
+
+    def test_models_to_dict(self):
+        model_1 = self.my_model.to_dict()
+        self.assertIsInstance(model_1["created_at"], str)
+        self.assertIsInstance(model_1["updated_at"], str)
+        self.assertIsInstance(model_1["my_number"], int)
+        self.assertIsInstance(model_1["id"], str)
+
+if __name__ == '__main__':
     unittest.main()
