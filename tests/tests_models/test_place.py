@@ -20,7 +20,7 @@ class TestsBaseModel(unittest.TestCase):
     def setUp(self):
         """set initial"""
         city_id = ""
-        user_id= ""
+        user_id = ""
         name = ""
         description = ""
         number_rooms = 0
@@ -62,6 +62,7 @@ class TestsBaseModel(unittest.TestCase):
         self.assertEqual(type(self.obj.latitude), float)
         self.assertEqual(type(self.obj.longitude), float)
         self.assertEqual(type(self.obj.amenity_ids), list)
+
 
 if __name__ == "__main__":
     unittest.main()

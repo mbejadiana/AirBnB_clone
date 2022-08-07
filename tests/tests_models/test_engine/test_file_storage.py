@@ -5,6 +5,7 @@
 import unittest
 from models.engine.file_storage import FileStorage
 
+
 class TestsFileStorage(unittest.TestCase):
 
     def test_normal_cases_base_model(self):

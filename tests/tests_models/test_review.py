@@ -12,7 +12,7 @@ from models import storage
 
 class TestsBaseModel(unittest.TestCase):
     """class test base model for unittest"""
-    
+
     obj = Review()
 
     def seUp(self):
@@ -38,12 +38,13 @@ class TestsBaseModel(unittest.TestCase):
     def test_subclass(self):
         """test if class is subclass"""
         self.assertEqual(issubclass(Review, BaseModel), True)
-	
+
     def test_type(self):
         """test type of object"""
         self.assertEqual(type(self.obj.place_id), str)
         self.assertEqual(type(self.obj.user_id), str)
         self.assertEqual(type(self.obj.text), str)
+
 
 if __name__ == "__main__":
     unittest.main()

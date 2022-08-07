@@ -41,5 +41,6 @@ class TestsAmenity(unittest.TestCase):
         obj = Amenity()
         self.assertEqual(type(self.obj.name), str)
 
+
 if __name__ == "__main__":
     unittest.main()

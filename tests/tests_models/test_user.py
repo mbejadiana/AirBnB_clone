@@ -47,5 +47,6 @@ class TestsUser(unittest.TestCase):
         self.assertEqual(type(self.obj.first_name), str)
         self.assertEqual(type(self.obj.last_name), str)
 
+
 if __name__ == "__main__":
     unittest.main()

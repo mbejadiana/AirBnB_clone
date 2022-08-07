@@ -13,11 +13,11 @@ from models import storage
 class TestsBaseModel(unittest.TestCase):
     """class test state"""
     obj = State()
-	    
+
     def setUp(self):
         """set up initial"""
         name = ""
-	
+
     def test_normal_cases_state(self):
         """normal cases"""
         my_object = State()
@@ -39,6 +39,7 @@ class TestsBaseModel(unittest.TestCase):
     def test_type(self):
         """test type of object"""
         self.assertEqual(type(self.obj.name), str)
+
 
 if __name__ == "__main__":
     unittest.main()
