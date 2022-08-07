@@ -1,90 +1,67 @@
 #!/usr/bin/python3
+"""Unittests for base model class"""
+
+
 import unittest
-import pep8
-import os
 from models.place import Place
-from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from datetime import datetime
+from uuid import UUID
+from models import storage
 
 
-def setUpModule():
-    """ Funtion to set a Module"""
-    pass
+class TestsBaseModel(unittest.TestCase):
+    """
+    class for unit testing
+    """
 
-
-def tearDownModule():
-    """ Function to delete a Module"""
-    pass
-
-
-class TestStringMethods(unittest.TestCase):
-    """ Check the pep8 """
-    def testpep8(self):
-        style = pep8.StyleGuide(quiet=True)
-        file1 = "models/place.py"
-        file2 = "tests/test_models/test_place.py"
-        check = style.check_files([file1, file2])
-        self.assertEqual(check.total_errors, 0,
-                         "Found code style errors (and warning).")
-
-
-class TestModels(unittest.TestCase):
-    """ Funtion to test the BaseModel"""
+    obj = Place()
 
     def setUp(self):
-        """ Set a variable """
-        self.place_1 = Place()
-        self.place_1.number_bathrooms = 1
-        self.place_1.longitude = 10.10
-        print("setUp")
+        """set initial"""
+        city_id = ""
+        user_id= ""
+        name = ""
+        description = ""
+        number_rooms = 0
+        number_bathrooms = 0
+        max_guest = 0
+        price_by_night = 0
+        latitude = 0.0
+        longitude = 0.0
+        amenity_ids = []
 
-    def tearDown(self):
-        """ End variable """
-        print("tearDown")
+    def test_normal_cases_place(self):
+        """normal cases"""
+        my_object = Place()
+        my_object.name = "Almasi"
+        my_object.my_number = 16
+        my_object.save()
+        my_object_dict = my_object.to_dict()
+        self.assertEqual(my_object.name, "Almasi")
+        self.assertEqual(my_object.my_number, 16)
+        self.assertEqual(my_object.__class__.__name__, "Place")
+        self.assertEqual(isinstance(my_object.created_at, datetime), True)
+        self.assertEqual(isinstance(my_object.updated_at, datetime), True)
+        self.assertEqual(type(my_object.__dict__), dict)
 
-    @classmethod
-    def setUpClass(cls):
-        """ define class """
-        print("setUpClass")
+    def test_subclass(self):
+        """test if class is subclass"""
+        self.assertEqual(issubclass(Place, BaseModel), True)
 
-    @classmethod
-    def tearDownClass(cls):
-        """ close the class """
-        print("tearDownClass")
+    def test_type(self):
+        """test type of object"""
+        self.assertEqual(type(self.obj.city_id), str)
+        self.assertEqual(type(self.obj.user_id), str)
+        self.assertEqual(type(self.obj.name), str)
+        self.assertEqual(type(self.obj.description), str)
+        self.assertEqual(type(self.obj.number_rooms), int)
+        self.assertEqual(type(self.obj.number_bathrooms), int)
+        self.assertEqual(type(self.obj.max_guest), int)
+        self.assertEqual(type(self.obj.price_by_night), int)
+        self.assertEqual(type(self.obj.latitude), float)
+        self.assertEqual(type(self.obj.longitude), float)
+        self.assertEqual(type(self.obj.amenity_ids), list)
 
-    def test_place_documentation(self):
-        """ check documentation """
-        self.assertIsNotNone(Place.__doc__)
-        self.assertIsNotNone(Place.__init__.__doc__)
-
-    def test_place_city(self):
-        """ check if the city name is create """
-        self.place_1.save()
-        self.assertTrue(os.path.isfile('file.json'))
-        self.assertTrue(hasattr(self.place_1, "__init__"))
-        self.assertTrue(hasattr(self.place_1, "city_id"))
-        self.assertTrue(hasattr(self.place_1, "user_id"))
-        self.assertTrue(hasattr(self.place_1, "name"))
-        self.assertTrue(hasattr(self.place_1, "description"))
-        self.assertTrue(hasattr(self.place_1, "number_rooms"))
-        self.assertTrue(hasattr(self.place_1, "number_bathrooms"))
-        self.assertTrue(hasattr(self.place_1, "max_guest"))
-        self.assertTrue(hasattr(self.place_1, "price_by_night"))
-        self.assertTrue(hasattr(self.place_1, "latitude"))
-        self.assertTrue(hasattr(self.place_1, "longitude"))
-        self.assertTrue(hasattr(self.place_1, "amenity_ids"))
-
-    def test_models_to_dict(self):
-        model_1 = self.place_1.to_dict()
-        self.assertIsInstance(model_1["created_at"], str)
-        self.assertIsInstance(model_1["updated_at"], str)
-        self.assertIsInstance(model_1["number_bathrooms"], int)
-        self.assertIsInstance(model_1["longitude"], float)
-        self.assertIsInstance(model_1["id"], str)
-
-    def test_place_is_instance(self):
-        """ check if place_1 is instance of Place """
-        self.assertIsInstance(self.place_1, Place)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

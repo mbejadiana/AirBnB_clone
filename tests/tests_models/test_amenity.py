@@ -1,81 +1,45 @@
 #!/usr/bin/python3
+"""Unittests for base model class"""
+
+
 import unittest
-import pep8
-import os
 from models.amenity import Amenity
-from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from datetime import datetime
+from uuid import UUID
+from models import storage
 
 
-def setUpModule():
-    """ Funtion to set a Module"""
-    pass
+class TestsAmenity(unittest.TestCase):
 
-
-def tearDownModule():
-    """ Function to delete a Module"""
-    pass
-
-
-class TestStringMethods(unittest.TestCase):
-    """ Check the pep8 """
-    def testpep8(self):
-        style = pep8.StyleGuide(quiet=True)
-        file1 = "models/amenity.py"
-        file2 = "tests/test_models/test_amenity.py"
-        check = style.check_files([file1, file2])
-        self.assertEqual(check.total_errors, 0,
-                         "Found code style errors (and warning).")
-
-
-class TestModels(unittest.TestCase):
-    """ Funtion to test the BaseModel"""
+    obj = Amenity()
 
     def setUp(self):
-        """ Set a variable """
-        self.amenity_1 = Amenity()
-        print("setUp")
+        """set initial"""
+        name = ""
 
-    def tearDown(self):
-        """ End variable """
-        print("tearDown")
+    def test_normal_cases_amenity(self):
+        """normal cases"""
+        my_object = Amenity()
+        my_object.name = "Wifi"
+        my_object.my_number = 19
+        my_object.save()
+        my_object_dict = my_object.to_dict()
+        self.assertEqual(my_object.name, "Wifi")
+        self.assertEqual(my_object.my_number, 19)
+        self.assertEqual(my_object.__class__.__name__, "Amenity")
+        self.assertEqual(isinstance(my_object.created_at, datetime), True)
+        self.assertEqual(isinstance(my_object.updated_at, datetime), True)
+        self.assertEqual(type(my_object.__dict__), dict)
 
-    @classmethod
-    def setUpClass(cls):
-        """ define class """
+    def test_subclass(self):
+        """test if class is subclass"""
+        self.assertEqual(issubclass(Amenity, BaseModel), True)
 
-        print("setUpClass")
+    def test_type(self):
+        """test type of object"""
+        obj = Amenity()
+        self.assertEqual(type(self.obj.name), str)
 
-    @classmethod
-    def tearDownClass(cls):
-        """ close the class """
-        print("tearDownClass")
-
-    def test_amenity_doc(self):
-        """ Check the documentation """
-        self.assertIsNotNone(Amenity.__doc__)
-        self.assertIsNotNone(Amenity.__init__.__doc__)
-
-    def test_place_city(self):
-        """ check if the amenity methods exists """
-        self.amenity_1.save()
-        self.assertTrue(os.path.isfile('file.json'))
-        self.assertTrue(hasattr(self.amenity_1, "__init__"))
-        self.assertTrue(hasattr(self.amenity_1, "name"))
-
-    def test_amenity_name(self):
-        """ check if the name is create """
-        self.amenity_1.name = 'Good'
-        self.assertEqual(self.amenity_1.name, 'Good')
-
-    def test_models_to_dict(self):
-        model_1 = self.amenity_1.to_dict()
-        self.assertIsInstance(model_1["created_at"], str)
-        self.assertIsInstance(model_1["updated_at"], str)
-        self.assertIsInstance(model_1["id"], str)
-
-    def test_amenity_instance(self):
-        """ check if amenity_1 is instance of Amenity """
-        self.assertIsInstance(self.amenity_1, Amenity)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
