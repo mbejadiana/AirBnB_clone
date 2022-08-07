@@ -1,83 +1,47 @@
 #!/usr/bin/python3
+"""
+Unittests for base model class
+"""
 import unittest
-import pep8
-import os
 from models.city import City
-from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from datetime import datetime
+from uuid import UUID
+from models import storage
 
 
-def setUpModule():
-    """ Funtion to set a Module"""
-    pass
+class TestsCity(unittest.TestCase):
 
-
-def tearDownModule():
-    """ Function to delete a Module"""
-    pass
-
-
-class TestStringMethods(unittest.TestCase):
-    """ Check the pep8 """
-    def testpep8(self):
-        style = pep8.StyleGuide(quiet=True)
-        file1 = "models/city.py"
-        file2 = "tests/test_models/test_city.py"
-        check = style.check_files([file1, file2])
-        self.assertEqual(check.total_errors, 0,
-                         "Found code style errors (and warning).")
-
-
-class TestModels(unittest.TestCase):
-    """ Funtion to test the BaseModel"""
+    obj = City()
 
     def setUp(self):
-        """ Set a variable """
-        self.city_1 = City()
-        self.city_1.state_id = "100"
-        print("setUp")
+        """set initial"""
+        name = ""
+        state_id = ""
 
-    def tearDown(self):
-        """ End variable """
-        print("tearDown")
+    def test_normal(self):
+        """normal cases"""
+        my_object = City()
+        my_object.name = "Nairobi"
+        my_object.my_number = 20
+        my_object.save()
+        my_object_dict = my_object.to_dict()
+        self.assertEqual(my_object.name, "Nairobi")
+        self.assertEqual(my_object.my_number, 20)
+        self.assertEqual(my_object.__class__.__name__, "City")
+        self.assertEqual(isinstance(my_object.created_at, datetime), True)
+        self.assertEqual(isinstance(my_object.updated_at, datetime), True)
+        self.assertEqual(type(my_object.__dict__), dict)
 
-    @classmethod
-    def setUpClass(cls):
-        """ define class """
-        print("setUpClass")
+    def test_subclass(self):
+        """test if class is subclass"""
+        self.assertEqual(issubclass(City, BaseModel), True)
 
-    @classmethod
-    def tearDownClass(cls):
-        """ close the class """
-        print("tearDownClass")
+    def test_type(self):
+        """test type of object"""
+        self.assertEqual(type(self.obj.name), str)
+        self.assertEqual(type(self.obj.state_id), str)
 
-    def test_city_doc(self):
-        """ Check the documentation """
-        self.assertIsNotNone(City.__doc__)
-        self.assertIsNotNone(City.__init__.__doc__)
 
-    def test_city_exist(self):
-        """ check if the city methos exists """
-        self.city_1.save()
-        self.assertTrue(os.path.isfile('file.json'))
-        self.assertTrue(hasattr(self.city_1, "__init__"))
-        self.assertTrue(hasattr(self.city_1, "state_id"))
-        self.assertTrue(hasattr(self.city_1, "name"))
-
-    def test_city_name(self):
-        """ check if the name is create """
-        self.city_1.name = 'Paris'
-        self.assertEqual(self.city_1.name, 'Paris')
-
-    def test_models_to_dict(self):
-        model_1 = self.city_1.to_dict()
-        self.assertIsInstance(model_1["created_at"], str)
-        self.assertIsInstance(model_1["updated_at"], str)
-        self.assertIsInstance(model_1["state_id"], str)
-        self.assertIsInstance(model_1["id"], str)
-
-    def test_city_instance(self):
-        """ check if city_1 is instance of City """
-        self.assertIsInstance(self.city_1, City)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

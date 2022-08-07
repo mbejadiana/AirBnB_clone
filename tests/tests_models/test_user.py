@@ -1,98 +1,52 @@
 #!/usr/bin/python3
+"""Unittests for user class"""
+
+
 import unittest
-import pep8
-import os
 from models.user import User
-from models.engine.file_storage import FileStorage
+from models.base_model import BaseModel
+from datetime import datetime
+from uuid import UUID
+from models import storage
 
 
-def setUpModule():
-    """ Funtion to set a Module"""
-    pass
+class TestsUser(unittest.TestCase):
+    """class test user"""
 
-
-def tearDownModule():
-    """ Function to delete a Module"""
-    pass
-
-
-class TestStringMethods(unittest.TestCase):
-    """ Check the pep8 """
-    def testpep8(self):
-        style = pep8.StyleGuide(quiet=True)
-        file1 = "models/user.py"
-        file2 = "tests/test_models/test_user.py"
-        check = style.check_files([file1, file2])
-        self.assertEqual(check.total_errors, 0,
-                         "Found code style errors (and warning).")
-
-
-class TestModels(unittest.TestCase):
-    """ Funtion to test the BaseModel"""
+    obj = User()
 
     def setUp(self):
-        """ Set a variable """
-        self.user_1 = User()
-        self.user_1.name = 'Betty'
-        self.user_1.lastname = "Doe"
-        self.user_1.email = 'bdoe@gmail.com'
-        self.user_1.password = "root"
-        print("setUp")
+        """set initial"""
+        email = ""
+        password = ""
+        first_name = ""
+        last_name = ""
 
-    def tearDown(self):
-        """ End variable """
-        print("tearDown")
+    def test_normal_cases_user(self):
+        """normal cases"""
+        my_object = User()
+        my_object.name = "Mel"
+        my_object.my_number = 29
+        my_object.save()
+        my_object_dict = my_object.to_dict()
+        self.assertEqual(my_object.name, "Mel")
+        self.assertEqual(my_object.my_number, 29)
+        self.assertEqual(my_object.__class__.__name__, "User")
+        self.assertEqual(isinstance(my_object.created_at, datetime), True)
+        self.assertEqual(isinstance(my_object.updated_at, datetime), True)
+        self.assertEqual(type(my_object.__dict__), dict)
 
-    @classmethod
-    def setUpClass(cls):
-        """ define class """
-        print("setUpClass")
+    def test_subclass(self):
+        """test if class is subclass"""
+        self.assertEqual(issubclass(User, BaseModel), True)
 
-    @classmethod
-    def tearDownClass(cls):
-        """ close the class """
-        print("tearDownClass")
+    def test_type(self):
+        """test type of object"""
+        self.assertEqual(type(self.obj.email), str)
+        self.assertEqual(type(self.obj.password), str)
+        self.assertEqual(type(self.obj.first_name), str)
+        self.assertEqual(type(self.obj.last_name), str)
 
-    def test_user_doc(self):
-        self.assertIsNotNone(User.__doc__)
-        self.assertIsNotNone(User.__init__.__doc__)
 
-    def test_place_city(self):
-        """ check if the city name is create """
-        self.user_1.save()
-        self.assertTrue(os.path.isfile('file.json'))
-        self.assertTrue(hasattr(self.user_1, "__init__"))
-        self.assertTrue(hasattr(self.user_1, "email"))
-        self.assertTrue(hasattr(self.user_1, "password"))
-        self.assertTrue(hasattr(self.user_1, "first_name"))
-        self.assertTrue(hasattr(self.user_1, "last_name"))
-
-    def test_user_name(self):
-        """ check if the name is create """
-        self.assertEqual(self.user_1.name, 'Betty')
-
-    def test_user_lastname(self):
-        """ chaeck if the lastname is create """
-        self.assertEqual(self.user_1.lastname, "Doe")
-
-    def test_user_email(self):
-        """ chaeck if the email is create """
-        self.assertEqual(self.user_1.email, 'bdoe@gmail.com')
-
-    def test_user_password(self):
-        """ chaeck if the password is create """
-        self.assertEqual(self.user_1.password, "root")
-
-    def test_models_to_dict(self):
-        model_1 = self.user_1.to_dict()
-        self.assertIsInstance(model_1["created_at"], str)
-        self.assertIsInstance(model_1["updated_at"], str)
-        self.assertIsInstance(model_1["email"], str)
-        self.assertIsInstance(model_1["id"], str)
-
-    def test_user_instance(self):
-        """ check if user_1 is instance of User """
-        self.assertIsInstance(self.user_1, User)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

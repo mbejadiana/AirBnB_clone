@@ -1,13 +1,9 @@
 #!/usr/bin/python3
-
 """
-    Class FileStorage serializes instances to a JSON
-    file and deserializes JSON file to instances
+class file storage
 """
-
 import json
 import os.path
-from datetime import datetime
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -18,30 +14,39 @@ from models.review import Review
 
 
 class FileStorage:
-    """"Class FileStorage"""
+    """
+    inner class file storage
+    """
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        """Return all objects"""
+        """
+        methon all of file storage
+        """
         return FileStorage.__objects
 
     def new(self, obj):
-        """Save a new object in the __objects dictionary"""
+        """
+        method new of file storage
+        """
         FileStorage.__objects[obj.__class__.__name__ + "." + obj.id] = obj
 
     def save(self):
-        """Convert the object into a dictionary and save it in the json file"""
-        with open(FileStorage.__file_path, mode="w", encoding="UTF-8") as a:
-            new = {}
-            for key, value in FileStorage.__objects.items():
-                new[key] = value.to_dict()
-            txt = json.dumps(new)
-            a.write(txt)
+        """
+        method save of file storage
+        """
+        first_dict = {}
+        for key, val in FileStorage.__objects.items():
+            if val:
+                first_dict[key] = val.to_dict()
+        with open(FileStorage.__file_path, 'w', encoding='utf-8') as f:
+            json.dump(first_dict, f)
 
     def reload(self):
-        """Recharge information from json file and convert to an object"""
-
+        """
+        method reload of class reload
+        """
         my_dict = {'BaseModel': BaseModel, 'User': User, 'Place': Place,
                    'State': State, 'City': City, 'Amenity': Amenity,
                    'Review': Review}

@@ -1,71 +1,29 @@
 #!/usr/bin/python3
+"""Unittests for base model class"""
 
-"""Test for the BaseModel class"""
 
 import unittest
-from datetime import datetime
-import os
 from models.base_model import BaseModel
-import pep8
+from datetime import datetime
+from uuid import UUID
+from models import storage
 
 
-class TestBaseModel(unittest.TestCase):
-    """This will test the base model class"""
+class TestsBaseModel(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        """Setup for the test"""
-        cls.base = BaseModel()
-        cls.base.name = "Betty"
-        cls.base.num = 20
-
-    @classmethod
-    def teardown(cls):
-        """At the end of the test this will tear it down"""
-        del cls.base
-
-    def tearDown(self):
-        """Teardown"""
-        try:
-            os.remove("file.json")
-        except Exception:
-            pass
-
-    def test_pep8_BaseModel(self):
-        """Test pep8 style"""
-        style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(['models/base_model.py'])
-        self.assertEqual(p.total_errors, 0, "fix pep8")
-
-    def test_checking_for_docstring_BaseModel(self):
-        """Checking for docstrings"""
-        self.assertIsNotNone(BaseModel.__doc__)
-        self.assertIsNotNone(BaseModel.__init__.__doc__)
-        self.assertIsNotNone(BaseModel.__str__.__doc__)
-        self.assertIsNotNone(BaseModel.save.__doc__)
-        self.assertIsNotNone(BaseModel.to_dict.__doc__)
-
-    def test_method_BaseModel(self):
-        """Chekcing if Basemodel have methods"""
-        self.assertTrue(hasattr(BaseModel, "__init__"))
-        self.assertTrue(hasattr(BaseModel, "save"))
-        self.assertTrue(hasattr(BaseModel, "to_dict"))
-
-    def test_init_BaseModel(self):
-        """Test if the base is an instance of type BaseModel"""
-        self.assertTrue(isinstance(self.base, BaseModel))
-
-    def test_save_BaesModel(self):
-        """Test if the save method works"""
-        self.base.save()
-        self.assertNotEqual(self.base.created_at, self.base.updated_at)
-
-    def test_to_dict_BaseModel(self):
-        """Test if to_dictionary method works"""
-        base_dict = self.base.to_dict()
-        self.assertEqual(self.base.__class__.__name__, 'BaseModel')
-        self.assertIsInstance(base_dict['created_at'], str)
-        self.assertIsInstance(base_dict['updated_at'], str)
+    def test_normal_cases_base_model(self):
+        """normal cases"""
+        my_object = BaseModel()
+        my_object.name = "Holbiland"
+        my_object.my_number = 29
+        my_object.save()
+        my_object_dict = my_object.to_dict()
+        self.assertEqual(my_object.name, "Holbiland")
+        self.assertEqual(my_object.my_number, 29)
+        self.assertEqual(my_object.__class__.__name__, "BaseModel")
+        self.assertEqual(isinstance(my_object.created_at, datetime), True)
+        self.assertEqual(isinstance(my_object.updated_at, datetime), True)
+        self.assertEqual(type(my_object.__dict__), dict)
 
 
 if __name__ == "__main__":
