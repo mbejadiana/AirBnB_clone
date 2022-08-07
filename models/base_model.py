@@ -13,13 +13,20 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """ initializes class """
-        if len(kwargs) > 0:
-            for key, value in kwargs.items:
-                if key == "created_at" or key == "updated_at":
-                    value = date.time.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
-                if key != "__class__":
-                    setattr(self, key, value)
-
+        if len(kwargs) is not 0:
+            for key, value in kwargs.items():
+                if key == "id":
+                    self.id = kwargs.get(key)
+                if key == "created_at":
+                    self.created_at = datetime.strptime(kwargs.get(key),
+                                                        '%Y-%m-%dT%H:%M:%S.%f')
+                if key == "updated_at":
+                    self.updated_at = datetime.strptime(kwargs.get(key),
+                                                        '%Y-%m-%dT%H:%M:%S.%f')
+                if key == "my_number":
+                    self.my_number = kwargs.get(key)
+                if key == "name":
+                    self.name = kwargs.get(key)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
