@@ -22,4 +22,4 @@ This project will help students learn how to manipulate HTML (structure of the p
 
 # Author
 
-**Mellanie Achieng**
+**Diana Mbeja**
